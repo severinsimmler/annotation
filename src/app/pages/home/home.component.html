@@ -1,0 +1,96 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-3">
+      <div class="card content-block">
+        <div class="card-header">
+          <b>Knowledge Base</b>
+        </div>
+        <div class="card-body knowledge-base">
+          {{ knowledgeBase | json }}
+        </div>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="card content-block">
+        <div class="card-body">
+          <div *ngFor="let token of testcase.tokens" ngbRadioGroup class="btn-group btn-group-toggle" name="tokens"
+            [(ngModel)]="selectedToken">
+            <label ngbButtonLabel class="btn btn-light btn-token">
+              <input ngbButton type="radio" [value]="token">
+              {{ token.text }}
+              <sub><span *ngIf="token.text === 'Mann'" class="badge badge-secondary">322</span></sub>
+              <sub><span *ngIf="token.text === 'Nice'" class="badge badge-secondary">Title</span></sub>
+              <sub><span *ngIf="token.text === 'Nice'" class="badge badge-secondary">First name</span></sub>
+              <sub><span *ngIf="token.text === 'Nice'" class="badge badge-secondary">Last name</span></sub>
+              <sub><span *ngIf="token.text === 'Nice'" class="badge badge-secondary">Title</span></sub>
+              <sub><span *ngIf="token.text === 'Nice'" class="badge badge-secondary">Title</span></sub>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card content-block">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <h5>Identifier</h5>
+              nice
+            </li>
+          <li class="list-group-item">
+            <h5>Named Entity</h5>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="title">
+              <label class="custom-control-label" for="title">Title</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="first-name">
+              <label class="custom-control-label" for="first-name">First name</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="last-name">
+              <label class="custom-control-label" for="last-name">Last name</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="pronoun">
+              <label class="custom-control-label" for="pronoun">Pronoun</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="misc">
+              <label class="custom-control-label" for="misc">Misc</label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <h5>Relation Type</h5>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="property">
+              <label class="custom-control-label" for="property">Property</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="position">
+              <label class="custom-control-label" for="position">Professional position</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="kinship">
+              <label class="custom-control-label" for="kinship">Kinship</label>
+            </div>
+            <hr>
+            <div class="form-check-inline">
+              Relates to <input type="text" class="form-control form-control-sm" id="relates-to"> as <input type="text"
+                class="form-control form-control-sm" id="relates-to-as">
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col"></div>
+  </div>
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-5 text-center">
+      <button type="button" class="btn btn-lg btn-success"><i class="fas fa-check"></i></button>
+      <button type="button" class="btn btn-lg btn-danger"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="col"></div>
+  </div>
+</div>
