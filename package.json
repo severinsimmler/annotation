@@ -1,8 +1,8 @@
 {
-  "name": "copr",
+  "name": "annotation",
   "version": "0.1.1",
-  "description": "Simulating Conflicts",
-  "homepage": "https://github.com/cosimwue/copr",
+  "description": "Annotate data",
+  "homepage": "https://github.com/severinsimmler/annotation",
   "author": {
     "name": "Severin Simmler",
     "email": "severin.simmler@stud-mail.uni-wuerzburg.de"

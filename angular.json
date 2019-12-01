@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "copr": {
+    "annotation": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -69,21 +69,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "copr:build"
+            "browserTarget": "annotation:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "copr:build:dev"
+              "browserTarget": "annotation:build:dev"
             },
             "production": {
-              "browserTarget": "copr:build:production"
+              "browserTarget": "annotation:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "copr:build"
+            "browserTarget": "annotation:build"
           }
         },
         "test": {
@@ -121,7 +121,7 @@
         }
       }
     },
-    "copr-e2e": {
+    "annotation-e2e": {
       "root": "e2e",
       "projectType": "application",
       "architect": {
@@ -139,7 +139,7 @@
       }
     }
   },
-  "defaultProject": "copr",
+  "defaultProject": "annotation",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
