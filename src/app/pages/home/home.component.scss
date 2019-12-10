@@ -35,6 +35,71 @@
     margin-left: 5px;
 }
 
-#identifier {
-    width: 50px;
+.label-badge {
+    margin-right: 5px;
+}
+
+.first-name {
+    color: '#800000' !important;
+    font-weight: bold;
+}
+
+.first-name-token {
+    background-color: rgb(128, 0, 0, .5);
+}
+
+.last-name {
+    color: '#9A6324';
+}
+
+.last-name-token {
+    border: solid 3px #9A6324;
+}
+
+.appellativum {
+    color: '#808000';
+}
+
+.appellativum-token {
+    border: solid 3px #808000;
+}
+
+.organization {
+    color: '#e6194B';
+}
+
+.organization-token {
+    border: solid 3px #e6194B;
+}
+
+.title {
+    color: '#469990';
+}
+
+.title-token {
+    border: solid 3px #469990;
+}
+
+.position {
+    color: '#000075';
+}
+
+.position-token {
+    border: solid 3px #000075;
+}
+
+.kinship {
+    color: '#4363d8';
+}
+
+.kinship-token {
+    border: solid 3px #4363d8;
+}
+
+.property {
+    color: '#911eb4';
+}
+
+.property-token {
+    border: solid 3px #911eb4;
 }
