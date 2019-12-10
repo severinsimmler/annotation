@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { Testcase, Token, KnowledgeBase } from '../../models';
+import { Component } from '@angular/core';
+import { Testcase, Token, Sentence } from '../../models';
 
+import { saveAs } from 'file-saver';
 import { Serialize } from 'cerialize';
 
-// https://stackblitz.com/edit/httpsstackoverflowcomquestions51806464how-to-create-and-downloa?file=src/app/app.component.ts
+import batch from '../../data/batch.json';
 
 
 @Component({
@@ -13,81 +13,152 @@ import { Serialize } from 'cerialize';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  testcase: Testcase;
+  testcases: Testcase[];
+  annotatedTestcases: Testcase[];
+  currentSentence: Sentence | any;
+  sentenceGetter: any;
   selectedLabel: string;
-  selectedToken: Token;
+  belongsTo: number | null;
+  fileString: any;
 
   constructor() {
-    let tokens = ['Dr', '.', 'Christian', 'Göke', ',', 'Geschäftsführer', 'der', 'Messe', 'Berlin', 'GmbH', ':', '"', 'Argentinien', 'mit', 'seiner', 'breiten', 'Angebotspalette', 'ist', 'ein', 'bedeutender', 'Obst', '-', 'und', 'Gemüseproduzent', ',', 'der', 'seine', 'Erzeugnisse', 'in', 'über', '60', 'Länder', 'exportiert', '.'];
-    this.testcase = new Testcase(tokens);
-    this.selectedLabel = 'firstName';
-    this.selectedToken = this.testcase[0];
+    this.testcases = [];
+    this.annotatedTestcases = [];
+
+    for (let document in batch) {
+      let sentences = batch[document];
+      console.log(document)
+      let testcase = new Testcase(document, sentences);
+      this.testcases.push(testcase);
+    }
+
+    this.sentenceGetter = this.nextSentence();
+    this.currentSentence = this.sentenceGetter.next().value;
+
+    this.selectedLabel = 'FIRSTNAME';
+    this.belongsTo = null;
   }
 
-  public assignLabel(token: Token) {
-    if (this.selectedLabel === 'firstName') {
-      if (token.namedEntities.isFirstName) {
-        token.namedEntities.isFirstName = false;
-      } else {
-        token.namedEntities.isFirstName = true;
-      }
+  public submitAnnotation(): void {
+    this.currentSentence.isValid = true;
+    let nextSentence = this.sentenceGetter.next();
+    if (!nextSentence.done) {
+      this.currentSentence = nextSentence.value;
+    } else {
+      this.saveFile(this.testcases)
     }
+  }
 
-    if (this.selectedLabel === 'lastName') {
-      if (token.namedEntities.isLastName) {
-        token.namedEntities.isLastName = false;
-      } else {
-        token.namedEntities.isLastName = true;
-      }
+  public dismissAnnotation(): void {
+    this.currentSentence.isValid = false;
+    let nextSentence = this.sentenceGetter.next();
+    if (!nextSentence.done) {
+      this.currentSentence = nextSentence.value;
+    } else {
+      this.saveFile(this.testcases)
     }
+  }
 
-    if (this.selectedLabel === 'appellativum') {
-      if (token.namedEntities.isAppellativum) {
-        token.namedEntities.isAppellativum = false;
-      } else {
-        token.namedEntities.isAppellativum = true;
-      }
-    }
+  private saveFile(data: any) {
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yyyy = today.getFullYear();
 
-    if (this.selectedLabel === 'organization') {
-      if (token.namedEntities.isOrganization) {
-        token.namedEntities.isOrganization = false;
-      } else {
-        token.namedEntities.isOrganization = true;
-      }
-    }
+    let serializedData = Serialize(data);
+    let blob = new Blob([JSON.stringify(serializedData)], { type: 'text/json;charset=utf-8' });
+    saveAs(blob, `${yyyy + mm + dd}-annotation.json`)
+  }
 
-    if (this.selectedLabel === 'title') {
-      if (token.attributes.isTitle) {
-        token.attributes.isTitle = false;
-      } else {
-        token.attributes.isTitle = true;
-      }
-    }
+  public loadBatch(event) {
+    const file: File = event.target.files[0]; 
+    const reader: FileReader = new FileReader();
 
-    if (this.selectedLabel === 'position') {
-      if (token.attributes.isPosition) {
-        token.attributes.isPosition = false;
-      } else {
-        token.attributes.isPosition = true;
-      }
-    }
+    reader.onload = () => {
+      console.log(reader.result);
+    };
 
-    if (this.selectedLabel === 'kinship') {
-      if (token.attributes.isKinship) {
-        token.attributes.isKinship = false;
-      } else {
-        token.attributes.isKinship = true;
-      }
-    }
+  }
 
-    if (this.selectedLabel === 'property') {
-      if (token.attributes.isProperty) {
-        token.attributes.isProperty = false;
-      } else {
-        token.attributes.isProperty = true;
+  private *nextSentence(): any {
+    for (let testcase of this.testcases) {
+      for (let sentence of testcase.sentences) {
+        yield sentence;
       }
     }
   }
 
+  public assignLabel(token: Token): void {
+    if (this.selectedLabel === 'FIRSTNAME') {
+      if (token.label === 'FIRSTNAME') {
+        token.label = 'O';
+      } else {
+        token.label = 'FIRSTNAME';
+      }
+    }
+
+    if (this.selectedLabel === 'LASTNAME') {
+      if (token.label === 'LASTNAME') {
+        token.label = 'O';
+      } else {
+        token.label = 'LASTNAME';
+      }
+    }
+
+    if (this.selectedLabel === 'APPELLATIVUM') {
+      if (token.label === 'APPELLATIVUM') {
+        token.label = 'O';
+      } else {
+        token.label = 'APPELLATIVUM';
+      }
+    }
+
+    if (this.selectedLabel === 'ORGANIZATION') {
+      if (token.label === 'ORGANIZATION') {
+        token.label = 'O';
+      } else {
+        token.label = 'ORGANIZATION';
+      }
+    }
+
+    if (this.selectedLabel === 'TITLE') {
+      if (token.label === 'TITLE') {
+        token.label = 'O';
+      } else {
+        token.label = 'TITLE';
+      }
+    }
+
+    if (this.selectedLabel === 'POSITION') {
+      if (token.label === 'POSITION') {
+        token.label = 'O';
+      } else {
+        token.label = 'POSITION';
+      }
+    }
+
+    if (this.selectedLabel === 'KINSHIP') {
+      if (token.label === 'KINSHIP') {
+        token.label = 'O';
+      } else {
+        token.label = 'KINSHIP';
+      }
+    }
+
+    if (this.selectedLabel === 'PROPERTY') {
+      if (token.label === 'PROPERTY') {
+        token.label = 'O';
+      } else {
+        token.label = 'PROPERTY';
+      }
+    }
+
+    if (this.selectedLabel === 'RELATED') {
+      if (this.belongsTo === null || this.belongsTo === token.belongsTo) {
+        token.belongsTo = null;
+      } else {
+        token.belongsTo = this.belongsTo;
+      }
+    }
+  }
 }
