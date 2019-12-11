@@ -16,6 +16,7 @@ export class HomeComponent {
   testcases: Testcase[];
   annotatedTestcases: Testcase[];
   currentSentence: Sentence | any;
+  currentRelations: any;
   sentenceGetter: any;
   selectedLabel: string;
   belongsTo: number | null;
@@ -27,7 +28,6 @@ export class HomeComponent {
 
     for (let document in batch) {
       let sentences = batch[document];
-      console.log(document)
       let testcase = new Testcase(document, sentences);
       this.testcases.push(testcase);
     }
@@ -39,8 +39,23 @@ export class HomeComponent {
     this.belongsTo = null;
   }
 
+  private getRelations() {
+    if (this.currentRelations) {
+      let rows = this.currentRelations.split('\n');
+      let relations = [];
+      for (let row of rows) {
+        relations.push(row.split(','));
+      }
+      return relations;
+    }
+  }
+
   public submitAnnotation(): void {
     this.currentSentence.isValid = true;
+    this.currentSentence.relations = this.getRelations();
+
+    console.log(this.currentSentence.relations)
+
     let nextSentence = this.sentenceGetter.next();
     if (!nextSentence.done) {
       this.currentSentence = nextSentence.value;
@@ -68,16 +83,6 @@ export class HomeComponent {
     let serializedData = Serialize(data);
     let blob = new Blob([JSON.stringify(serializedData)], { type: 'text/json;charset=utf-8' });
     saveAs(blob, `${yyyy + mm + dd}-annotation.json`)
-  }
-
-  public loadBatch(event) {
-    const file: File = event.target.files[0]; 
-    const reader: FileReader = new FileReader();
-
-    reader.onload = () => {
-      console.log(reader.result);
-    };
-
   }
 
   private *nextSentence(): any {

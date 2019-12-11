@@ -16,6 +16,7 @@ export class Token {
 export class Sentence {
     @serializeAs('index') index: string;
     @serializeAs('tokens') tokens: Array<Token>;
+    @serializeAs('relations') relations: Array<number[]>;
     @serializeAs('is_valid') isValid: boolean;
 
     constructor(index: string, tokens: Array<string>) {

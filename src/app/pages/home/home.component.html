@@ -1,33 +1,6 @@
 <div class="container-fluid" style="margin-top: 30px; margin-bottom: 30px;">
   <div class="row">
     <div class="col"></div>
-    <div class="col-5">
-      <div class="card content-block">
-        <div class="card-body">
-          <div *ngFor="let token of currentSentence.tokens" class="d-inline-block">
-            <button
-              type="button"
-              class="btn btn-light btn-token"
-              (click)="assignLabel(token)"
-              placement="top"
-              [ngbTooltip]="token.label"
-              [ngClass]="{
-                'first-name-token': token.label === 'FIRSTNAME',
-                'last-name-token': token.label === 'LASTNAME',
-                'appellativum-token': token.label === 'APPELLATIVUM',
-                'organization-token': token.label === 'ORGANIZATION',
-                'title-token': token.label === 'TITLE',
-                'position-token': token.label === 'POSITION',
-                'kinship-token': token.label === 'KINSHIP',
-                'property-token': token.label === 'PROPERTY'
-              }">
-                <span *ngIf="token.belongsTo" class="badge badge-secondary">{{ token.belongsTo }}</span>
-                {{ token.text }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="col-3">
       <div class="card content-block">
         <ul class="list-group list-group-flush">
@@ -85,6 +58,18 @@
               <input
                 type="radio"
                 class="custom-control-input"
+                id="property"
+                value="PROPERTY"
+                [(ngModel)]="selectedLabel">
+              <label class="custom-control-label property" for="property">Property</label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <h5>Relationships</h5>
+            <div class="custom-control custom-radio">
+              <input
+                type="radio"
+                class="custom-control-input"
                 id="position"
                 value="POSITION"
                 [(ngModel)]="selectedLabel">
@@ -99,28 +84,58 @@
                 [(ngModel)]="selectedLabel">
               <label class="kinship custom-control-label" for="kinship">Kinship</label>
             </div>
-            <div class="custom-control custom-radio">
-              <input
-                type="radio"
-                class="custom-control-input"
-                id="property"
-                value="PROPERTY"
-                [(ngModel)]="selectedLabel">
-              <label class="custom-control-label property" for="property">Property</label>
-            </div>
           </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="card content-block">
+        <div class="card-body">
+          <div *ngFor="let token of currentSentence.tokens" class="d-inline-block">
+            <button
+              type="button"
+              class="btn btn-light btn-token"
+              (click)="assignLabel(token)"
+              placement="top"
+              [ngbTooltip]="token.label"
+              [ngClass]="{
+                'first-name-token': token.label === 'FIRSTNAME',
+                'last-name-token': token.label === 'LASTNAME',
+                'appellativum-token': token.label === 'APPELLATIVUM',
+                'organization-token': token.label === 'ORGANIZATION',
+                'title-token': token.label === 'TITLE',
+                'position-token': token.label === 'POSITION',
+                'kinship-token': token.label === 'KINSHIP',
+                'property-token': token.label === 'PROPERTY'
+              }">
+                <span *ngIf="token.belongsTo" class="badge badge-secondary">{{ token.belongsTo }}</span>
+                {{ token.text }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card content-block">
+        <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <h5>Identifier</h5>
             <div class="custom-control custom-radio">
               <input
                 type="radio"
                 class="custom-control-input"
-                id="relates-to"
+                id="belongs-to"
                 value="RELATED"
                 [(ngModel)]="selectedLabel">
-              <label class="custom-control-label" for="relates-to">
+              <label class="custom-control-label" for="belongs-to">
                 <input type="number" class="form-control form-control-sm" id="identifier" [(ngModel)]="belongsTo">
               </label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <h5>Relations</h5>
+            <div>
+              <textarea class="form-control" [(ngModel)]="currentRelations"></textarea>
             </div>
           </li>
         </ul>
