@@ -91,6 +91,7 @@
     <div class="col-5">
       <div class="card content-block">
         <div class="card-body">
+          <h4>{{ currentTitle }}</h4>
           <div *ngFor="let token of currentSentence.tokens" class="d-inline-block">
             <button
               type="button"
@@ -119,7 +120,7 @@
       <div class="card content-block">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <h5>Identifier</h5>
+            <h5>Identifier <small class="fas fa-info-circle" (click)="open(content)" style="cursor: pointer;"></small></h5>
             <div class="custom-control custom-radio">
               <input
                 type="radio"
@@ -152,3 +153,30 @@
     <div class="col"></div>
   </div>
 </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Current Knowledge Base</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Tokens</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let entry of knowledgeBase.knowledge | keyvalue">
+        <th scope="row">{{ entry.key | number }}</th>
+        <td>
+          {{ entry.value.join(', ') }}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

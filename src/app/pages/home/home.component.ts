@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { Testcase, Token, Sentence } from '../../models';
+import { Testcase, Token, Sentence, KnowledgeBase } from '../../models';
 
 import { saveAs } from 'file-saver';
 import { Serialize } from 'cerialize';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import batch from '../../data/batch.json';
 
@@ -14,15 +15,17 @@ import batch from '../../data/batch.json';
 })
 export class HomeComponent {
   testcases: Testcase[];
+  knowledgeBase: KnowledgeBase;
   annotatedTestcases: Testcase[];
   currentSentence: Sentence | any;
   currentRelations: any;
+  currentTitle: string;
   sentenceGetter: any;
   selectedLabel: string;
   belongsTo: number | null;
   fileString: any;
 
-  constructor() {
+  constructor(private modalService: NgbModal) {
     this.testcases = [];
     this.annotatedTestcases = [];
 
@@ -37,6 +40,7 @@ export class HomeComponent {
 
     this.selectedLabel = 'FIRSTNAME';
     this.belongsTo = null;
+    this.knowledgeBase = new KnowledgeBase();
   }
 
   private getRelations() {
@@ -53,8 +57,9 @@ export class HomeComponent {
   public submitAnnotation(): void {
     this.currentSentence.isValid = true;
     this.currentSentence.relations = this.getRelations();
+    this.currentRelations = '';
 
-    console.log(this.currentSentence.relations)
+    this.knowledgeBase.update(this.currentSentence);
 
     let nextSentence = this.sentenceGetter.next();
     if (!nextSentence.done) {
@@ -65,6 +70,7 @@ export class HomeComponent {
   }
 
   public dismissAnnotation(): void {
+    this.currentRelations = '';
     this.currentSentence.isValid = false;
     let nextSentence = this.sentenceGetter.next();
     if (!nextSentence.done) {
@@ -87,6 +93,7 @@ export class HomeComponent {
 
   private *nextSentence(): any {
     for (let testcase of this.testcases) {
+      this.currentTitle = testcase.id;
       for (let sentence of testcase.sentences) {
         yield sentence;
       }
@@ -165,5 +172,9 @@ export class HomeComponent {
         token.belongsTo = this.belongsTo;
       }
     }
+  }
+
+  public open(content: any): void {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 }
